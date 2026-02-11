@@ -1,0 +1,27 @@
+{
+  "experiment_name": "adult_mlp",
+  "dataset": {
+    "name": "adult",
+    "batch_size": 256,
+    "num_workers": 2,
+    "problem_type": "classification"
+  },
+  "model": {
+    "architecture": "mlp",
+    "hidden_sizes": [
+      256,
+      128
+    ],
+    "dropout": 0.5
+  },
+  "training": {
+    "num_epochs": 30,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "early_stopping": {
+      "enabled": true,
+      "patience": 5,
+      "min_delta": 0.0
+    }
+  }
+}

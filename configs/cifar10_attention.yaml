@@ -1,0 +1,28 @@
+experiment_name: cifar10_attention
+
+dataset:
+  name: cifar10
+  root: ./data/cifar10
+  batch_size: 64
+  num_workers: 2
+  problem_type: classification
+  val_ratio: 0.1
+
+model:
+  architecture: attention
+  patch_size: 4
+  d_model: 128
+  num_heads: 4
+  num_layers: 4
+  mlp_dim: 256
+  dropout: 0.1
+
+training:
+  num_epochs: 40
+  learning_rate: 0.0005
+  weight_decay: 0.0005
+  early_stopping:
+    enabled: true
+    patience: 7
+    min_delta: 0.0
+

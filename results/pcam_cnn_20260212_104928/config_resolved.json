@@ -1,0 +1,26 @@
+{
+  "experiment_name": "pcam_cnn",
+  "dataset": {
+    "name": "pcam",
+    "root": "./data/pcam",
+    "batch_size": 128,
+    "num_workers": 2,
+    "subset_fraction": 0.2,
+    "problem_type": "classification"
+  },
+  "model": {
+    "architecture": "cnn",
+    "base_channels": 32,
+    "dropout": 0.5
+  },
+  "training": {
+    "num_epochs": 20,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0005,
+    "early_stopping": {
+      "enabled": true,
+      "patience": 7,
+      "min_delta": 0.0
+    }
+  }
+}

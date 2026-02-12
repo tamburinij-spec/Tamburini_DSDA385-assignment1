@@ -1,0 +1,30 @@
+{
+  "experiment_name": "pcam_attention",
+  "dataset": {
+    "name": "pcam",
+    "root": "./data/pcam",
+    "batch_size": 64,
+    "num_workers": 2,
+    "subset_fraction": 0.2,
+    "problem_type": "classification"
+  },
+  "model": {
+    "architecture": "attention",
+    "patch_size": 8,
+    "d_model": 128,
+    "num_heads": 4,
+    "num_layers": 4,
+    "mlp_dim": 256,
+    "dropout": 0.1
+  },
+  "training": {
+    "num_epochs": 20,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0005,
+    "early_stopping": {
+      "enabled": true,
+      "patience": 7,
+      "min_delta": 0.0
+    }
+  }
+}

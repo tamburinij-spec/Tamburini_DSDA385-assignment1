@@ -70,6 +70,14 @@ pip install -r requirements.txt
   - 96×96 RGB patches from H&E-stained slides
   - Binary label: normal vs tumor tissue
   - Metric: accuracy, F1
+  - **If automatic download fails** with *"Too many users have viewed or downloaded this file recently"* (Google Drive quota), either **wait a few hours and run again**, or **download manually**: create `data/pcam/pcam/`, download the 6 `.gz` files from the links below, put them in that folder, then decompress each (e.g. 7-Zip, or `gzip -d *.gz`) so you have the `.h5` files. Then run training with `download=True` (it will skip download if the `.h5` files exist).
+    - [train images](https://drive.google.com/uc?id=1Ka0XfEMiwgCYPdTI-vv6eUElOBnKFKQ2) → `camelyonpatch_level_2_split_train_x.h5.gz`
+    - [train targets](https://drive.google.com/uc?id=1269yhu3pZDP8UYFQs-NYs3FPwuK-nGSG) → `camelyonpatch_level_2_split_train_y.h5.gz`
+    - [val images](https://drive.google.com/uc?id=1hgshYGWK8V-eGRy8LToWJJgDU_rXWVJ3) → `camelyonpatch_level_2_split_valid_x.h5.gz`
+    - [val targets](https://drive.google.com/uc?id=1bH8ZRbhSVAhScTS0p9-ZzGnX91cHT3uO) → `camelyonpatch_level_2_split_valid_y.h5.gz`
+    - [test images](https://drive.google.com/uc?id=1qV65ZqZvWzuIVthK8eVDhIwrbnsJdbg_) → `camelyonpatch_level_2_split_test_x.h5.gz`
+    - [test targets](https://drive.google.com/uc?id=17BHrSrwWKjYsOgTMmoqrIjDy6Fa2o_gP) → `camelyonpatch_level_2_split_test_y.h5.gz`
+    - After downloading, rename each file to the name shown above if needed. Then decompress (e.g. 7-Zip, or run `python data/decompress_pcam.py` from the project root) so the `.h5` files are in `data/pcam/pcam/`.
 
 Each dataset is wrapped in `data/datasets.py` so that all three expose **train/val/test** splits and `DataLoader`s with consistent interfaces.
 
@@ -199,26 +207,26 @@ After running all 8 experiments, each run creates a folder under `results/` name
 
 **Test set results:**
 
-| Dataset   | Architecture | Test Accuracy | Test F1 |
+| Dataset   | Architecture | Test Accuracy  | Test F1 |
 |-----------|--------------|----------------|---------|
 | Adult     | MLP          | 85.97%         | 68.55%  |
 | Adult     | CNN          | 85.78%         | 65.20%  |
-| CIFAR-10  | MLP          | —              | —       |
-| CIFAR-10  | CNN          | —              | —       |
-| CIFAR-10  | Attention    | —              | —       |
-| PCam      | MLP          | —              | —       |
-| PCam      | CNN          | —              | —       |
-| PCam      | Attention    | —              | —       |
+| CIFAR-10  | MLP          | 37.45%         | 36.28%  |
+| CIFAR-10  | CNN          | 81.75%         | 81.46%  |
+| CIFAR-10  | Attention    | 74.62%         | 74.40%  |
+| PCam      | MLP          | 55.84%         | 27.98%  |
+| PCam      | CNN          | 82.66%         | 81.08%  |
+| PCam      | Attention    | 79.88%         | 78.91%  |
 
-*Adult uses MLP and CNN only. CIFAR-10 and PCam: run the corresponding configs and add values from each run’s `final_metrics.json`.*
+*Adult uses MLP and CNN only. PCam: run the corresponding configs and add values from each run’s `final_metrics.json`.*
 
 **Compact view (accuracy only):**
 
-|            | MLP    | CNN    | Attention |
-|------------|--------|--------|------------|
-| **Adult**  | 85.97% | 85.78% | —          |
-| **CIFAR-10** | —    | —      | —          |
-| **PCam**   | —      | —      | —          |
+|              | MLP    | CNN    | Attention  |
+|--------------|--------|--------|------------|
+| **Adult**    | 85.97% | 85.78% | -- N/E --  |
+| **CIFAR-10** | 37.45% | 81.75% | 74.62%     |
+| **PCam**     | 55.84% | 82.66% | 79.88%     |
 
 ---
 

@@ -13,7 +13,7 @@ The **goals** are to compare how architectures interact with data modalities and
 ### Project structure
 
 ```
-DSDA385-assigment-1/
+DSDA385-assignment-1/
 ├── configs/           # YAML configs (Adult: mlp, cnn; CIFAR-10/PCam: mlp, cnn, attention)
 ├── data/              # Dataset loading and preprocessing
 │   ├── datasets.py    # create_dataloaders() for Adult, CIFAR-10, PCam
@@ -42,11 +42,9 @@ DSDA385-assigment-1/
 Install dependencies:
 
 ```bash
-cd DSDA385-assigment-1
+cd DSDA385-assignment-1
 python -m venv .venv
 .venv\Scripts\activate   # on Windows
-# On Linux/macOS: source .venv/bin/activate
-pip install -r requirements.txt
 ```
 
 ---
@@ -191,19 +189,13 @@ python train.py --config configs/pcam_attention.yaml
 
 ---
 
-### 6. Results Table (fill after training)
+### 6. Results Table (filled after training)
 
 After running all 8 experiments, each run creates a folder under `results/` named like `adult_mlp_20260210_111945`. Inside each folder, open **`final_metrics.json`** — it contains:
 
 - **`accuracy`** — test accuracy (e.g. `0.8596` = 85.96%)
 - **`f1`** — test F1 score (e.g. `0.6855` = 68.55%)
 - **`loss`** — test loss (optional to report)
-
-**How to fill the table:**
-
-1. Go to `results/` and open each experiment folder (name pattern: `{dataset}_{architecture}_{date}_{time}`).
-2. In each folder, open `final_metrics.json` and copy the `accuracy` and `f1` values.
-3. Round to 2–4 decimal places (e.g. 85.96% or 0.8596) and paste into the table below.
 
 **Test set results:**
 
@@ -219,14 +211,6 @@ After running all 8 experiments, each run creates a folder under `results/` name
 | PCam      | Attention    | 79.88%         | 78.91%  |
 
 *Adult uses MLP and CNN only. PCam: run the corresponding configs and add values from each run’s `final_metrics.json`.*
-
-**Compact view (accuracy only):**
-
-|              | MLP    | CNN    | Attention  |
-|--------------|--------|--------|------------|
-| **Adult**    | 85.97% | 85.78% | -- N/E --  |
-| **CIFAR-10** | 37.45% | 81.75% | 74.62%     |
-| **PCam**     | 55.84% | 82.66% | 79.88%     |
 
 ---
 
@@ -250,3 +234,199 @@ These are suggestions you can adapt when you write `README`/report text for subm
 
 Use the saved metrics and plots under `results/` to support your explanations with evidence.
 
+---
+
+### 8. Objective
+
+This assignment benchmarks how different neural architectures behave across different data modalities:
+
+- Tabular data → Adult
+- Natural images → CIFAR-10
+- Medical images → PCam
+
+The goal is to understand how **model inductive bias** interacts with **data structure**, not just to maximize accuracy.
+
+---
+
+### 9. Code Design
+
+The project is fully modular and configuration-driven.
+
+- **Configs (`configs/`)**
+  - YAML files define dataset, architecture, optimizer, epochs, batch size, early stopping.
+  - No code modification required to change experiments.
+
+- **Model Factory (`models/factory.py`)**
+  - Dynamically creates models (`mlp`, `cnn`, `attention`).
+  - Ensures clean separation between architectures.
+
+- **Training Pipeline (`utils/training.py`)**
+  - Shared training loop for all experiments.
+  - Early stopping based on validation loss.
+  - Saves:
+    - `history.json`
+    - `final_metrics.json`
+    - `loss_curve.png`
+    - `accuracy_curve.png`
+
+All experiments use:
+- Adam optimizer
+- Consistent train/val/test splits
+- No pretrained models
+- ≤ 1 hour per model
+
+---
+
+### 10. Dataset Insights
+
+#### Adult (Tabular)
+
+- Mixed numerical + categorical features
+- Binary classification (>50K)
+
+**Best model:** MLP  
+Reason: Tabular data has no spatial structure; fully connected layers are sufficient.
+
+---
+
+#### CIFAR-10 (Natural Images)
+
+- 32×32 RGB
+- 10 classes
+
+**Best model:** CNN  
+Reason:
+- CNN preserves spatial locality.
+- MLP destroys structure when flattening.
+- Attention works but is less sample-efficient than CNN on small datasets.
+
+---
+
+#### PCam (Histopathology)
+
+- 96×96 RGB
+- Binary tumor detection
+- Texture-based patterns
+
+**Best model:** CNN  
+Reason:
+- CNN captures local texture features.
+- Attention competitive but slightly lower.
+- MLP fails due to loss of spatial inductive bias.
+
+---
+
+### 11. Architecture Comparison
+
+| Architecture | Strength | Weakness |
+|--------------|----------|----------|
+| MLP | Works well for structured/tabular data | Poor on images (no spatial bias) |
+| CNN | Strong spatial inductive bias | Limited global context |
+| Attention | Captures global relationships | Requires more data, less sample-efficient |
+
+---
+
+### 12. Learning Curve Observations
+
+- MLP on images → overfitting and poor generalization.
+- CNN → stable convergence and best validation performance.
+- Attention → slower convergence but competitive.
+- Early stopping prevented over-training.
+
+---
+
+### 13. Key Takeaways
+
+1. Inductive bias must match data modality.
+2. CNN is optimal for image-based tasks.
+3. MLP is sufficient for tabular data.
+4. Attention models are powerful but data-hungry.
+5. Clean modular design enables reproducible experiments.
+
+---
+
+### 14. Reproducibility
+
+To reproduce any experiment:
+
+```bash
+python train.py --config configs/<experiment>.yaml
+```
+
+---
+
+### 15. Bonus — Learning Curve Comparison
+
+Learning curves were analyzed using `history.json` for each experiment.
+
+### Convergence Speed
+
+- **Adult (MLP vs CNN)**
+  - Both converge quickly (<10 epochs).
+  - Very small generalization gap.
+  - Stable optimization (tabular data is low-dimensional).
+
+- **CIFAR-10**
+  - MLP plateaus early (~38% val acc).
+  - CNN steadily improves to ~81.8%.
+  - Attention improves more gradually but consistently to ~74.6%.
+  - CNN shows faster and more stable convergence.
+
+- **PCam**
+  - MLP unstable after few epochs (validation collapse).
+  - CNN steadily improves to ~82.7%.
+  - Attention competitive (~79.9%) but with more variance.
+  - CNN demonstrates strongest stability.
+
+---
+
+## 16. Parameter Efficiency vs Performance
+
+Although exact parameter counts vary:
+
+- **MLP (Images)**
+  - Very large parameter count (due to flattening 32×32×3 or 96×96×3).
+  - Poor accuracy.
+  - Inefficient use of parameters.
+
+- **CNN**
+  - Weight sharing drastically reduces parameters.
+  - Highest performance on image datasets.
+  - Most parameter-efficient architecture.
+
+- **Attention (ViT-style)**
+  - Higher parameter complexity than CNN.
+  - Competitive but not superior.
+  - Requires larger datasets to outperform CNN.
+
+Key Insight:
+Higher parameter count ≠ better performance.
+Architectural inductive bias matters more than raw capacity.
+
+---
+
+## 17. Architecture Efficiency Summary
+
+| Dataset   | Most Efficient Model | Reason |
+|------------|---------------------|--------|
+| Adult      | MLP                 | Matches tabular structure |
+| CIFAR-10   | CNN                 | Spatial inductive bias |
+| PCam       | CNN                 | Texture feature extraction |
+
+CNN achieves the best trade-off between:
+- Accuracy
+- Stability
+- Parameter efficiency
+- Convergence speed
+
+---
+
+## 18. Overall Experimental Insight
+
+1. Matching architecture to modality is critical.
+2. CNN remains the strongest baseline for vision tasks.
+3. Attention models are competitive but require scale.
+4. MLP scales poorly for high-dimensional image inputs.
+5. Proper early stopping prevents severe overfitting (especially on PCam).
+
+This bonus analysis reinforces that model inductive bias dominates performance more than parameter count alone.

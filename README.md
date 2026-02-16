@@ -34,7 +34,7 @@ DSDA385-assignment-1/
 
 ---
 
-### 1. Setup
+### Setup
 
 - **Python**: 3.10+ (tested with 3.13)
 - **Framework**: PyTorch
@@ -49,7 +49,7 @@ python -m venv .venv
 
 ---
 
-### 2. Datasets
+### Datasets
 
 - **Adult (UCI Adult Income, tabular)**
   - Loaded via `sklearn.fetch_openml("adult", version=2, as_frame=True)`
@@ -81,7 +81,7 @@ Each dataset is wrapped in `data/datasets.py` so that all three expose **train/v
 
 ---
 
-### 3. Architectures
+### Architectures
 
 - **MLP (Multilayer Perceptron)**
   - `models/mlp.py`
@@ -102,7 +102,7 @@ All architectures are created via the factory in `models/factory.py`. For this a
 
 ---
 
-### 4. Training and Evaluation
+### Training and Evaluation
 
 The main entry point is `train.py`, which takes a **YAML config** describing one experiment:
 
@@ -154,7 +154,7 @@ Early stopping is controlled in each experiment’s config under `training.early
 
 ---
 
-### 5. Running the 8 Experiments
+### Running the 8 Experiments
 
 Configs are under `configs/`. **Adult** uses only MLP and CNN (no attention); **CIFAR-10** and **PCam** use all three architectures.
 
@@ -189,7 +189,7 @@ python train.py --config configs/pcam_attention.yaml
 
 ---
 
-### 6. Results Table (filled after training)
+### Results Table (filled after training)
 
 After running all 8 experiments, each run creates a folder under `results/` named like `adult_mlp_20260210_111945`. Inside each folder, open **`final_metrics.json`** — it contains:
 
@@ -214,7 +214,7 @@ After running all 8 experiments, each run creates a folder under `results/` name
 
 ---
 
-### 7. What to Analyze in Your Report
+### What to Analyze in Your Report
 
 These are suggestions you can adapt when you write `README`/report text for submission:
 
@@ -236,7 +236,7 @@ Use the saved metrics and plots under `results/` to support your explanations wi
 
 ---
 
-### 8. Objective
+### Objective
 
 This assignment benchmarks how different neural architectures behave across different data modalities:
 
@@ -248,7 +248,7 @@ The goal is to understand how **model inductive bias** interacts with **data str
 
 ---
 
-### 9. Code Design
+### Code Design
 
 The project is fully modular and configuration-driven.
 
@@ -277,7 +277,7 @@ All experiments use:
 
 ---
 
-### 10. Dataset Insights
+### Dataset Insights
 
 #### Adult (Tabular)
 
@@ -316,7 +316,7 @@ Reason:
 
 ---
 
-### 11. Architecture Comparison
+### Architecture Comparison
 
 | Architecture | Strength | Weakness |
 |--------------|----------|----------|
@@ -326,7 +326,7 @@ Reason:
 
 ---
 
-### 12. Learning Curve Observations
+### Learning Curve Observations
 
 - MLP on images → overfitting and poor generalization.
 - CNN → stable convergence and best validation performance.
@@ -335,7 +335,7 @@ Reason:
 
 ---
 
-### 13. Key Takeaways
+### Key Takeaways
 
 1. Inductive bias must match data modality.
 2. CNN is optimal for image-based tasks.
@@ -345,7 +345,7 @@ Reason:
 
 ---
 
-### 14. Reproducibility
+### Reproducibility
 
 To reproduce any experiment:
 
@@ -355,7 +355,7 @@ python train.py --config configs/<experiment>.yaml
 
 ---
 
-### 15. Bonus — Learning Curve Comparison
+### Learning Curve Comparison
 
 Learning curves were analyzed using `history.json` for each experiment.
 
@@ -380,7 +380,7 @@ Learning curves were analyzed using `history.json` for each experiment.
 
 ---
 
-## 16. Parameter Efficiency vs Performance
+## Parameter Efficiency vs Performance
 
 Although exact parameter counts vary:
 
@@ -405,7 +405,7 @@ Architectural inductive bias matters more than raw capacity.
 
 ---
 
-## 17. Architecture Efficiency Summary
+## Architecture Efficiency Summary
 
 | Dataset   | Most Efficient Model | Reason |
 |------------|---------------------|--------|
@@ -421,7 +421,7 @@ CNN achieves the best trade-off between:
 
 ---
 
-## 18. Overall Experimental Insight
+## Overall Experimental Insight
 
 1. Matching architecture to modality is critical.
 2. CNN remains the strongest baseline for vision tasks.
